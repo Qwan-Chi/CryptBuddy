@@ -10,6 +10,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.qwanchi.cryptbuddy.screens.CryptApp
+import com.qwanchi.cryptbuddy.screens.StartScreen
 import com.qwanchi.cryptbuddy.ui.theme.CryptBuddyTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,25 +24,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    CryptApp()
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    CryptBuddyTheme {
-        Greeting("Android")
     }
 }

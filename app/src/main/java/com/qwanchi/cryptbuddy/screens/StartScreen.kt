@@ -22,17 +22,31 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.room.Dao
+import com.qwanchi.cryptbuddy.DB.AppDatabase
 
 @Composable
-fun StartScreen() {
+fun StartScreen(navController: NavController ) {
+    var loginText by remember { mutableStateOf("") }
+    var passwordText by remember { mutableStateOf("") }
+    var appDatabase: AppDatabase = AppDatabase.getInstance(LocalContext.current)
+    var userDao = appDatabase.userDao()
+
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -84,19 +98,25 @@ fun StartScreen() {
 
         // Форма авторизации
         TextField(
-            value = "Test",
-            onValueChange = {},
+            value = loginText,
+            onValueChange = { loginText = it },
             label = { Text("Username") },
             modifier = Modifier.padding(top = 24.dp)
         )
         TextField(
-            value = "Test",
-            onValueChange = {},
+            value = passwordText,
+            onValueChange = { passwordText = it },
             label = { Text("Password") },
             modifier = Modifier.padding(top = 8.dp)
         )
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                var user = userDao.getUserByEmail(loginText)
+                if (user != null) {
+                    if (user.password == passwordText)
+                        navController.navigate("app/${user.id}")
+                }
+            },
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier.padding(top = 24.dp)
         ) {
@@ -113,10 +133,10 @@ fun StartScreen() {
     }
 }
 
-@Preview(
-    showSystemUi = true, showBackground = true, wallpaper = Wallpapers.RED_DOMINATED_EXAMPLE,
-)
-@Composable
-fun StartScreenPreview() {
-    StartScreen()
-}
+//@Preview(
+//    showSystemUi = true, showBackground = true, wallpaper = Wallpapers.RED_DOMINATED_EXAMPLE,
+//)
+//@Composable
+//fun StartScreenPreview() {
+//    StartScreen()
+//}

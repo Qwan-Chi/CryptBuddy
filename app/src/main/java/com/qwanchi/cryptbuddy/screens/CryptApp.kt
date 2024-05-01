@@ -20,10 +20,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CryptApp() {
+fun CryptApp(navController: NavController, userID: Int) {
     val screens = mapOf(
         "Passwords" to Icons.Rounded.Lock,
         "Generator" to Icons.Rounded.Star,
@@ -68,8 +69,8 @@ fun CryptApp() {
     }
 }
 
-@Preview
-@Composable
-fun CryptAppPreview() {
-    CryptApp()
-}
+//@Preview
+//@Composable
+//fun CryptAppPreview() {
+//    CryptApp()
+//}

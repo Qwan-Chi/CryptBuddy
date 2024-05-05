@@ -40,12 +40,11 @@ import androidx.room.Dao
 import com.qwanchi.cryptbuddy.DB.AppDatabase
 
 @Composable
-fun StartScreen(navController: NavController ) {
+fun RegisterScreen(navController: NavController ) {
     var loginText by remember { mutableStateOf("") }
     var passwordText by remember { mutableStateOf("") }
     var appDatabase: AppDatabase = AppDatabase.getDatabase(LocalContext.current)
     var userDao = appDatabase.getUserDao()
-
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -132,11 +131,3 @@ fun StartScreen(navController: NavController ) {
         }
     }
 }
-
-//@Preview(
-//    showSystemUi = true, showBackground = true, wallpaper = Wallpapers.RED_DOMINATED_EXAMPLE,
-//)
-//@Composable
-//fun StartScreenPreview() {
-//    StartScreen()
-//}

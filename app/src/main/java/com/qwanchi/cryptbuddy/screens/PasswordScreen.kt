@@ -108,9 +108,3 @@ fun PasswordCard() {
         }
     }
 }
-
-@Preview
-@Composable
-fun PasswordScreenPreview() {
-    CryptApp()
-}

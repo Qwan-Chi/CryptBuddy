@@ -44,7 +44,7 @@ fun StartScreen(navController: NavController ) {
     var loginText by remember { mutableStateOf("") }
     var passwordText by remember { mutableStateOf("") }
     var appDatabase: AppDatabase = AppDatabase.getDatabase(LocalContext.current)
-    var userDao = appDatabase.getUserDao()
+    var userDao = appDatabase.userDao()
 
 
     Column(

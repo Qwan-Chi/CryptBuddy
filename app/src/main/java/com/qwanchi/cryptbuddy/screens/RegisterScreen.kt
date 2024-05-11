@@ -1,6 +1,7 @@
 package com.qwanchi.cryptbuddy.screens
 
 import android.graphics.drawable.shapes.Shape
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,13 +39,19 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.room.Dao
 import com.qwanchi.cryptbuddy.DB.AppDatabase
+import com.qwanchi.cryptbuddy.DB.User
+import com.qwanchi.cryptbuddy.classes.Checks.checkAuth
+import com.qwanchi.cryptbuddy.classes.Checks.checkSpecial
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
-fun RegisterScreen(navController: NavController ) {
+fun RegisterScreen(navController: NavController) {
     var loginText by remember { mutableStateOf("") }
     var passwordText by remember { mutableStateOf("") }
     var appDatabase: AppDatabase = AppDatabase.getDatabase(LocalContext.current)
     var userDao = appDatabase.userDao()
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -110,11 +117,11 @@ fun RegisterScreen(navController: NavController ) {
         )
         Button(
             onClick = {
-                var user = userDao.getUserByEmail(loginText)
-                if (user != null) {
-                    if (user.password == passwordText)
-                        navController.navigate("app/${user.id}")
-                }
+                if (!checkAuth(context, loginText, passwordText)) return@Button
+                //if (!checkSpecial(context, passwordText)) return@Button
+                val user = User(userDao.getUserCount() + 1, loginText, passwordText)
+                userDao.insert(user)
+                navController.navigate("app/${userDao.getUserCount() + 1}")
             },
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier.padding(top = 24.dp)
@@ -124,10 +131,10 @@ fun RegisterScreen(navController: NavController ) {
         // Кнопка для смены режима (регистрация/авторизация)
         TextButton(
             {
-                /*TODO*/
+                navController.navigate("start")
             },
         ) {
-            Text("Don't have an account? Register")
+            Text("Already have an account? Sign in")
         }
     }
 }

@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.qwanchi.cryptbuddy.screens.CryptApp
+import com.qwanchi.cryptbuddy.screens.RegisterScreen
 import com.qwanchi.cryptbuddy.screens.StartScreen
 
 @Composable
@@ -22,8 +23,11 @@ fun Nav() {
         ) {
             CryptApp(navController, it.arguments?.getInt("userID")!!)
         }
-//        composable ("register") {
-//            RegisterActivity(navController)
-//        }
+        composable ("register") {
+            RegisterScreen(navController)
+        }
+        composable ("start") {
+            StartScreen(navController)
+        }
     }
 }

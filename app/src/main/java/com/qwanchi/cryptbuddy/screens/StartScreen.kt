@@ -125,7 +125,7 @@ fun StartScreen(navController: NavController ) {
         // Кнопка для смены режима (регистрация/авторизация)
         TextButton(
             {
-                /*TODO*/
+                navController.navigate("register")
             },
         ) {
             Text("Don't have an account? Register")

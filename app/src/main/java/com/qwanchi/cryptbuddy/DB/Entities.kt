@@ -44,19 +44,23 @@ data class Password(
 interface UserDao {
 
     @Insert
-    suspend fun insert(user: User): Long
+    fun insert(user: User): Long
 
     @Update
-    suspend fun update(user: User)
+    fun update(user: User)
 
     @Delete
-    suspend fun delete(user: User)
+    fun delete(user: User)
 
     @Query("SELECT * FROM User WHERE id = :id")
     fun getUserById(id: Int): User?
 
     @Query("SELECT * FROM User WHERE email = :email")
     fun getUserByEmail(email: String): User?
+
+    @Query("SELECT COUNT(*) FROM User")
+    fun getUserCount(): Int
+
 
 }
 

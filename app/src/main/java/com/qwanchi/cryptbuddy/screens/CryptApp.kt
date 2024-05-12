@@ -63,7 +63,7 @@ fun CryptApp(navController: NavController, userID: Int) {
             when (currentScreen) {
                 "Passwords" -> PasswordScreen(userID)
                 "Generator" -> GeneratorScreen()
-                "Settings" -> SettingScreen()
+                "Settings" -> SettingScreen(navController)
             }
         }
     }

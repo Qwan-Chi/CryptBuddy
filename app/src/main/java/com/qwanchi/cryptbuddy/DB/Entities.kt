@@ -68,10 +68,10 @@ interface UserDao {
 interface UserPasswordDao {
 
     @Insert
-    suspend fun insert(userPassword: UserPassword)
+    fun insert(userPassword: UserPassword)
 
     @Delete
-    suspend fun delete(userPassword: UserPassword)
+    fun delete(userPassword: UserPassword)
 
     @Query("SELECT * FROM Password WHERE id IN (SELECT password_id FROM UserPassword WHERE user_id = :userId)")
     fun getPasswordsForUser(userId: Int): List<Password>
@@ -81,14 +81,16 @@ interface UserPasswordDao {
 interface PasswordDao {
 
     @Insert
-    suspend fun insert(password: Password): Long
+    fun insert(password: Password): Long
 
     @Update
-    suspend fun update(password: Password)
+    fun update(password: Password)
 
     @Delete
-    suspend fun delete(password: Password)
+    fun delete(password: Password)
 
     @Query("SELECT * FROM Password WHERE id = :id")
     fun getPasswordById(id: Int): Password?
+    @Query("SELECT COUNT(*) FROM Password")
+    fun getPasswordCount(): Int
 }

@@ -59,10 +59,10 @@ fun PasswordScreen(userID: Int) {
             }
         },
     ) { innerPadding ->
-        if (showAdd){
-            AddPasswordDialog {
+        if (showAdd) {
+            AddPasswordDialog({
                 showAdd = false
-            }
+            }, userID)
         }
         Column(Modifier.padding(innerPadding)) {
             SearchBar(
@@ -93,7 +93,8 @@ fun PasswordScreen(userID: Int) {
             Divider(Modifier.padding(bottom = 16.dp))
 
             LazyColumn {
-                items(passwords) {pass -> PasswordCard(pass)
+                items(passwords) { pass ->
+                    PasswordCard(pass)
                 }
             }
         }

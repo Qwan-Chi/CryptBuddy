@@ -19,15 +19,27 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.qwanchi.cryptbuddy.DB.AppDatabase
+import com.qwanchi.cryptbuddy.DB.Password
+import com.qwanchi.cryptbuddy.DB.UserPassword
+import kotlinx.datetime.Clock
+
 
 @Composable
-fun AddPasswordDialog(onDismissRequest: () -> Unit) {
+fun AddPasswordDialog(onDismissRequest: () -> Unit, userId: Int) {
     var websiteUrl by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var notes by remember { mutableStateOf("") }
+    val appDatabase: AppDatabase = AppDatabase.getDatabase(LocalContext.current)
+    var passwordDao = appDatabase.passwordDao()
+    var userPasswordDao = appDatabase.userPasswordDao()
+    var userDao = appDatabase.userDao()
+
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier
@@ -55,6 +67,13 @@ fun AddPasswordDialog(onDismissRequest: () -> Unit) {
                     onValueChange = {
                         password = it
                     })
+                OutlinedTextField(
+                    label = { Text(text = "Notes") },
+                    value = notes,
+                    modifier = Modifier.height(100.dp),
+                    onValueChange = {
+                        notes = it
+                    })
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier
@@ -62,7 +81,16 @@ fun AddPasswordDialog(onDismissRequest: () -> Unit) {
                         .padding(top = 16.dp)
                 ) {
                     Button(onClick = {
-
+                        val pass = Password(
+                            passwordDao.getPasswordCount() + 1,
+                            websiteUrl,
+                            username,
+                            password,
+                            notes,
+                            Clock.System.now().epochSeconds
+                        )
+                        passwordDao.insert(pass)
+                        userPasswordDao.insert(UserPassword(userId, pass.id))
                         onDismissRequest()
                     }, modifier = Modifier.weight(1f)) {
                         Text(text = "Add")

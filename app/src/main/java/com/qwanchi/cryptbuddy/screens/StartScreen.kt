@@ -1,5 +1,7 @@
 package com.qwanchi.cryptbuddy.screens
 
+import android.app.Activity
+import android.content.Context
 import android.graphics.drawable.shapes.Shape
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -38,13 +40,18 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.room.Dao
 import com.qwanchi.cryptbuddy.DB.AppDatabase
+import com.qwanchi.cryptbuddy.classes.Checks.checkUserExist
+import com.qwanchi.cryptbuddy.classes.Checks.checkUserPassword
 
 @Composable
-fun StartScreen(navController: NavController ) {
+fun StartScreen(navController: NavController) {
     var loginText by remember { mutableStateOf("") }
     var passwordText by remember { mutableStateOf("") }
-    var appDatabase: AppDatabase = AppDatabase.getDatabase(LocalContext.current)
-    var userDao = appDatabase.userDao()
+    val appDatabase: AppDatabase = AppDatabase.getDatabase(LocalContext.current)
+    val userDao = appDatabase.userDao()
+    val activity = LocalContext.current as Activity
+    val context = LocalContext.current
+    val sharedPref = activity.getPreferences(Context.MODE_PRIVATE)
 
 
     Column(
@@ -111,10 +118,15 @@ fun StartScreen(navController: NavController ) {
         )
         Button(
             onClick = {
-                var user = userDao.getUserByEmail(loginText)
+                val user = checkUserExist(context, loginText)
                 if (user != null) {
-                    if (user.password == passwordText)
+                    if (checkUserPassword(context, user, passwordText)) {
                         navController.navigate("app/${user.id}")
+                        with(sharedPref.edit()) {
+                            putString("user", user.id.toString())
+                            apply()
+                        }
+                    }
                 }
             },
             shape = RoundedCornerShape(8.dp),

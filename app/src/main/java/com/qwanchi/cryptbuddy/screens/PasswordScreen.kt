@@ -36,13 +36,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.qwanchi.cryptbuddy.DB.AppDatabase
 import com.qwanchi.cryptbuddy.DB.Password
 import com.qwanchi.cryptbuddy.dialogs.AddPasswordDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PasswordScreen(userID: Int) {
+fun PasswordScreen(userID: Int, navController: NavController) {
     var appDatabase: AppDatabase = AppDatabase.getDatabase(LocalContext.current)
     var userPasswordDao = appDatabase.userPasswordDao()
     var passwords by remember { mutableStateOf(userPasswordDao.getPasswordsForUser(userID)) }
@@ -62,7 +63,7 @@ fun PasswordScreen(userID: Int) {
         if (showAdd) {
             AddPasswordDialog({
                 showAdd = false
-            }, userID)
+            }, userID, navController = navController)
         }
         Column(Modifier.padding(innerPadding)) {
             SearchBar(
@@ -100,6 +101,7 @@ fun PasswordScreen(userID: Int) {
         }
     }
 }
+
 
 @Composable
 fun PasswordCard(password: Password) {

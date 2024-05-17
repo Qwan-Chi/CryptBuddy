@@ -51,7 +51,7 @@ fun StartScreen(navController: NavController) {
     val userDao = appDatabase.userDao()
     val activity = LocalContext.current as Activity
     val context = LocalContext.current
-    val sharedPref = activity.getPreferences(Context.MODE_PRIVATE)
+    val sharedPref = activity.getSharedPreferences("userSet", Context.MODE_PRIVATE)
 
 
     Column(

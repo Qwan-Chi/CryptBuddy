@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavController
 import com.qwanchi.cryptbuddy.DB.AppDatabase
 import com.qwanchi.cryptbuddy.DB.Password
 import com.qwanchi.cryptbuddy.DB.UserPassword
@@ -30,7 +31,7 @@ import kotlinx.datetime.Clock
 
 
 @Composable
-fun AddPasswordDialog(onDismissRequest: () -> Unit, userId: Int) {
+fun AddPasswordDialog(onDismissRequest: () -> Unit, userId: Int, navController: NavController) {
     var websiteUrl by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -48,6 +49,7 @@ fun AddPasswordDialog(onDismissRequest: () -> Unit, userId: Int) {
             shape = RoundedCornerShape(16.dp),
         ) {
             Column(Modifier.padding(16.dp)) {
+
 
                 OutlinedTextField(
                     label = { Text(text = "Website Url") },
@@ -91,6 +93,7 @@ fun AddPasswordDialog(onDismissRequest: () -> Unit, userId: Int) {
                         )
                         passwordDao.insert(pass)
                         userPasswordDao.insert(UserPassword(userId, pass.id))
+                        navController.navigate("app/$userId")
                         onDismissRequest()
                     }, modifier = Modifier.weight(1f)) {
                         Text(text = "Add")

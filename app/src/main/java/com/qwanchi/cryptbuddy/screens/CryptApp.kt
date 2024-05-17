@@ -61,7 +61,7 @@ fun CryptApp(navController: NavController, userID: Int) {
             modifier = Modifier.padding(innerPadding)
         ) {
             when (currentScreen) {
-                "Passwords" -> PasswordScreen(userID)
+                "Passwords" -> PasswordScreen(userID, navController = navController)
                 "Generator" -> GeneratorScreen()
                 "Settings" -> SettingScreen(navController)
             }

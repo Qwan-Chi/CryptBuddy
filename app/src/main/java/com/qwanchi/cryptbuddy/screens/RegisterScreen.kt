@@ -1,5 +1,6 @@
 package com.qwanchi.cryptbuddy.screens
 
+import android.content.Context
 import android.graphics.drawable.shapes.Shape
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -49,9 +50,10 @@ import kotlinx.coroutines.launch
 fun RegisterScreen(navController: NavController) {
     var loginText by remember { mutableStateOf("") }
     var passwordText by remember { mutableStateOf("") }
-    var appDatabase: AppDatabase = AppDatabase.getDatabase(LocalContext.current)
-    var userDao = appDatabase.userDao()
+    val appDatabase: AppDatabase = AppDatabase.getDatabase(LocalContext.current)
+    val userDao = appDatabase.userDao()
     val context = LocalContext.current
+    val sharedPrefs = context.getSharedPreferences("userSet", Context.MODE_PRIVATE)
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -118,10 +120,13 @@ fun RegisterScreen(navController: NavController) {
         Button(
             onClick = {
                 if (!checkAuth(context, loginText, passwordText)) return@Button
-                //if (!checkSpecial(context, passwordText)) return@Button
-                val user = User(userDao.getUserCount() + 1, loginText, passwordText)
+                val user = User(userDao.getUserCount(), loginText, passwordText)
                 userDao.insert(user)
-                navController.navigate("app/${userDao.getUserCount() + 1}")
+                with(sharedPrefs.edit()) {
+                    putString("user", userDao.getUserCount().toString())
+                    apply()
+                }
+                navController.navigate("app/${userDao.getUserCount()}")
             },
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier.padding(top = 24.dp)

@@ -45,4 +45,13 @@ object Checks {
             false
         }
     }
+
+    fun checkValidUrl(context: Context, url: String): Boolean {
+        return if (url.matches(Regex("^(http|https)://.*"))) {
+            true
+        } else {
+            Toast.makeText(context, "Invalid URL.", Toast.LENGTH_SHORT).show()
+            false
+        }
+    }
 }

@@ -7,8 +7,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -21,12 +26,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.qwanchi.cryptbuddy.DB.AppDatabase
 import com.qwanchi.cryptbuddy.DB.Password
 import com.qwanchi.cryptbuddy.DB.UserPassword
+import com.qwanchi.cryptbuddy.classes.Checks
+import com.qwanchi.cryptbuddy.classes.Generation
 import kotlinx.datetime.Clock
 
 
@@ -37,9 +45,9 @@ fun AddPasswordDialog(onDismissRequest: () -> Unit, userId: Int, navController: 
     var password by remember { mutableStateOf("") }
     var notes by remember { mutableStateOf("") }
     val appDatabase: AppDatabase = AppDatabase.getDatabase(LocalContext.current)
-    var passwordDao = appDatabase.passwordDao()
-    var userPasswordDao = appDatabase.userPasswordDao()
-    var userDao = appDatabase.userDao()
+    val passwordDao = appDatabase.passwordDao()
+    val userPasswordDao = appDatabase.userPasswordDao()
+    val context = LocalContext.current
 
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
@@ -49,10 +57,14 @@ fun AddPasswordDialog(onDismissRequest: () -> Unit, userId: Int, navController: 
             shape = RoundedCornerShape(16.dp),
         ) {
             Column(Modifier.padding(16.dp)) {
-
-
+                Text(
+                    text = "Add Password",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(bottom = 12.dp).fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
                 OutlinedTextField(
-                    label = { Text(text = "Website Url") },
+                    label = { Text(text = "Website URL") },
                     value = websiteUrl,
                     onValueChange = {
                         websiteUrl = it
@@ -68,6 +80,14 @@ fun AddPasswordDialog(onDismissRequest: () -> Unit, userId: Int, navController: 
                     value = password,
                     onValueChange = {
                         password = it
+                    },
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            password = Generation.generatePass()
+                        }) {
+                            Icon(imageVector = Icons.Rounded.Refresh, contentDescription = "Generate password")
+                        }
+
                     })
                 OutlinedTextField(
                     label = { Text(text = "Notes") },
@@ -83,6 +103,7 @@ fun AddPasswordDialog(onDismissRequest: () -> Unit, userId: Int, navController: 
                         .padding(top = 16.dp)
                 ) {
                     Button(onClick = {
+                        if (!Checks.checkValidUrl(context, websiteUrl)) return@Button
                         val pass = Password(
                             passwordDao.getPasswordCount() + 1,
                             websiteUrl,
@@ -92,7 +113,7 @@ fun AddPasswordDialog(onDismissRequest: () -> Unit, userId: Int, navController: 
                             Clock.System.now().epochSeconds
                         )
                         passwordDao.insert(pass)
-                        userPasswordDao.insert(UserPassword(userId, pass.id))
+                        userPasswordDao.insert(UserPassword(userId, passwordDao.getPasswordCount()))
                         navController.navigate("app/$userId")
                         onDismissRequest()
                     }, modifier = Modifier.weight(1f)) {

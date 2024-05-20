@@ -15,12 +15,14 @@ data class User(
         ForeignKey(
             entity = User::class,
             parentColumns = ["id"],
-            childColumns = ["user_id"]
+            childColumns = ["user_id"],
+            onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = Password::class,
             parentColumns = ["id"],
-            childColumns = ["password_id"]
+            childColumns = ["password_id"],
+            onDelete = ForeignKey.CASCADE
         )
     ]
 )
@@ -32,11 +34,11 @@ data class UserPassword(
 @Entity
 data class Password(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val website_url: String,
-    val username: String,
-    val password: String, // Encrypted
-    val notes: String?, // Encrypted
-    val last_updated: Long
+    var website_url: String,
+    var username: String,
+    var password: String, // Encrypted
+    var notes: String?, // Encrypted
+    var last_updated: Long
 )
 
 // Data Access Objects (DAOs)

@@ -1,5 +1,8 @@
 package com.qwanchi.cryptbuddy.screens
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -19,12 +22,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+
+fun Context.activity(): Activity? = when {
+    this is Activity -> this
+    else -> (this as? ContextWrapper)?.baseContext?.activity()
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CryptApp(navController: NavController, userID: Int) {
+    val activity = LocalContext.current.activity()
     val screens = mapOf(
         "Passwords" to Icons.Rounded.Lock,
         "Generator" to Icons.Rounded.Star,
@@ -63,7 +73,7 @@ fun CryptApp(navController: NavController, userID: Int) {
             when (currentScreen) {
                 "Passwords" -> PasswordScreen(userID, navController = navController)
                 "Generator" -> GeneratorScreen()
-                "Settings" -> SettingScreen(navController)
+                "Settings" -> SettingScreen(navController, activity!!)
             }
         }
     }
